@@ -107,6 +107,10 @@ case $OSName in
         __BuildOS=FreeBSD
         ;;
 
+    NetBSD)
+        __BuildOS=NetBSD
+        ;;
+
     OpenBSD)
         __BuildOS=OpenBSD
         ;;

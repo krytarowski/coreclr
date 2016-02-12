@@ -6,6 +6,8 @@
 #include "blobfetcher.h"
 #include "pedecoder.h"
 
+#include <time.h>
+
 #ifdef _DEBUG
 #define LOGGING
 #endif

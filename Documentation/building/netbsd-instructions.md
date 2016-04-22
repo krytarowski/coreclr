@@ -1,0 +1,120 @@
+Build CoreCLR on NetBSD
+======================
+
+This guide will walk you through building CoreCLR on NetBSD.  We'll start by showing how to set up your environment from scratch.
+
+Environment
+===========
+
+These instructions are written on NetBSD 7.x on the amd64 platform, since that's the release the team uses.
+
+Older releases aren't supposed to be supported, as there is need to use modern LLVM stack (Clang, libunwind and LLDB), that is developed against the NetBSD-7.x branch. Pull Requests are welcome to address other ports (like i386 or evbarm) as long as they don't break the ability to use NetBSD/amd64.
+
+Minimum RAM required to build is 1GB.
+
+The pkgsrc framework is required to build .Net projects on NetBSD. Minimal pkgsrc version required is 2016Q1.
+
+pkgsrc setup
+---------------
+
+Fetch pkgsrc and install to the system. By default it's done in the /usr directory as root:
+
+```
+ftp -o- ftp://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.gz | tar -zxpf- -C /usr
+```
+
+The .Net projects are track in pkgsrc-wip.
+
+In order to use pkgsrc-wip there is need to install git first:
+
+
+```
+cd /usr/pkgsrc/devel/git-base && make install
+```
+
+Install pkgsrc-wip
+
+```
+cd /usr/pkgsrc
+git clone git://wip.pkgsrc.org/pkgsrc-wip.git wip
+```
+
+Alternatively when you don't want to develop .Net you can fetch pkgsrc-wip without history:
+
+```
+cd /usr/pkgsrc
+git clone --depth 1 git://wip.pkgsrc.org/pkgsrc-wip.git wip
+```
+
+Then install the CoreCLR package you need:
+
+```
+cd /usr/pkgsrc/wip/coreclr-git
+make install
+```
+
+CoreCLR is installed under the `$PREFIX`/CoreCLR subdirectory, by default it's `/usr/pkg/CoreCLR`.
+
+
+PAL tests
+=========
+
+To run PAL tests on NetBSD, use the `make test` in the coreclr-git package from pkgsrc-wip:
+
+```
+cd /usr/pkgsrc/wip/coreclr-git
+make test
+```
+
+Build CoreFX
+============
+
+The CoreFX package is located in pkgsrc-wip as corefx-git. In order to build it you need to perfom the following command:
+
+```
+cd /usr/pkgsrc/wip/coreclr-git
+make
+```
+
+At the moment there is no install or test targer in the pkgsrc framework.
+
+CoreFX tests
+============
+
+The steps to run CoreFX managed code tests:
+
+Build CoreCLR (with pkgsrc-wip/coreclr-git) on NetBSD x64 Debug and install the Product dir to /usr/pkg/CoreCLR:
+
+```
+cd /usr/pkgsrc/wip/coreclr-git && make install
+```
+
+Build CoreFX native x64 Debug and the work (build) dir is in /tmp/pkgsrc-tmp/wip/corefx-git/work/corefx:
+
+```
+cd /usr/pkgsrc/wip/corefx-git && make
+```
+
+Build CoreCLR Debug x64 on Linux and copy mscorlib.dll from ./bin/Product/Linux.x64.Debug/mscorlib.dll to NetBSD machine under /usr/pkg/CoreCLR:
+
+```
+./build.sh mscorlib Debug
+```
+
+Build CoreFX Debug x64 on Linux and copy bin/ to NetBSD machine under /public/bin:
+
+```
+./build.sh /p:OSGroup=NetBSD /p:SkipTests=true
+```
+
+Try to run ./run-test.sh:
+
+```
+$ pwd
+/tmp/pkgsrc-tmp/wip/corefx-git/work/corefx
+$ sudo ./run-test.sh \
+--coreclr-bins /usr/pkg/CoreCLR/ \
+--mscorlib-bins /usr/pkg/CoreCLR/ \
+--corefx-tests /public/bin/tests/NetBSD.AnyCPU.Debug/ \
+--corefx-native-bins ./bin/NetBSD.x64.Debug/Native/
+```

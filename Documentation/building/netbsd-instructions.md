@@ -23,7 +23,7 @@ Fetch pkgsrc and install to the system. By default it's done in the /usr directo
 ftp -o- ftp://ftp.netbsd.org/pub/pkgsrc/stable/pkgsrc.tar.gz | tar -zxpf- -C /usr
 ```
 
-The .Net projects are track in pkgsrc-wip.
+The .Net projects are tracked in pkgsrc-wip.
 
 In order to use pkgsrc-wip there is need to install git first:
 
@@ -32,14 +32,9 @@ In order to use pkgsrc-wip there is need to install git first:
 cd /usr/pkgsrc/devel/git-base && make install
 ```
 
-Install pkgsrc-wip
+Installing pkgsrc-wip
 
-```
-cd /usr/pkgsrc
-git clone git://wip.pkgsrc.org/pkgsrc-wip.git wip
-```
 
-Alternatively when you don't want to develop .Net you can fetch pkgsrc-wip without history:
 
 ```
 cd /usr/pkgsrc
@@ -53,7 +48,7 @@ cd /usr/pkgsrc/wip/coreclr-git
 make install
 ```
 
-CoreCLR is installed under the `$PREFIX`/CoreCLR subdirectory, by default it's `/usr/pkg/CoreCLR`.
+CoreCLR is installed in `/usr/pkg/CoreCLR` subdirectory by default.
 
 
 PAL tests
@@ -83,13 +78,13 @@ CoreFX tests
 
 The steps to run CoreFX managed code tests:
 
-Build CoreCLR (with pkgsrc-wip/coreclr-git) on NetBSD x64 Debug and install the Product dir to /usr/pkg/CoreCLR:
+Build CoreCLR (with pkgsrc-wip/coreclr-git) on NetBSD x64, Debug and install the Product dir to /usr/pkg/CoreCLR:
 
 ```
 cd /usr/pkgsrc/wip/coreclr-git && make install
 ```
 
-Build CoreFX native x64 Debug and the work (build) dir is in /tmp/pkgsrc-tmp/wip/corefx-git/work/corefx:
+Build CoreFX native x64 Debug and the work (build) dir is in /usr/pkgsrc/wip/corefx-git/work/corefx:
 
 ```
 cd /usr/pkgsrc/wip/corefx-git && make
@@ -111,7 +106,7 @@ Try to run ./run-test.sh:
 
 ```
 $ pwd
-/tmp/pkgsrc-tmp/wip/corefx-git/work/corefx
+/usr/pkgsrc/wip/corefx-git/work/corefx
 $ sudo ./run-test.sh \
 --coreclr-bins /usr/pkg/CoreCLR/ \
 --mscorlib-bins /usr/pkg/CoreCLR/ \
